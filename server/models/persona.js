@@ -43,7 +43,7 @@ let persona = new Schema({
         ref: 'Preparatoria',
         required: [true, 'Favor de ingresar una preparatoria.']
     },
-    jsnRespuesta: [Respuesta.schema]
+    aJsnRespuesta: [Respuesta.schema]
 
 }, schemaOptions);
 
