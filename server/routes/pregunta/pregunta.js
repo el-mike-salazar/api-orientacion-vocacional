@@ -165,21 +165,43 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
                         encontrado = true;
                     }
                 }
+                
+                if( persona.length === todasPreguntas.length){
+                    encontrado = false;
+                }
             });
+            
 
         } while (encontrado);
-
-
+        console.log('Persona', persona.length);
+        console.log('Todas', todasPreguntas.length);
+        
         process.anterior = todasPreguntas[random];
 
         await Pregunta.findById(todasPreguntas[random]).then((pregunta) => {
+            console.log(todasPreguntas.length);
+            console.log(persona.length);
+            
+            if(persona.length === todasPreguntas.length){
+
+                return res.status(200).json({
+                    ok: true,
+                    resp: 200,
+                    msg: 'Ya no hay más preguntas para mostrar.',
+                    cont: {
+                        ultima: true
+                    }
+                });
+
+            }
 
             return res.status(200).json({
                 ok: true,
                 resp: 200,
                 msg: 'La pregunta se ha consultado exitosamente.',
                 cont: {
-                    pregunta
+                    pregunta,
+                    ultima: false
                 }
             });
 
