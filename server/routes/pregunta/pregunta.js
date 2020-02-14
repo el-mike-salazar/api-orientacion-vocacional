@@ -98,7 +98,6 @@ app.get('/obtener/:idPregunta', (req, res) => {
 
 app.get('/obtenerAleatorio/:idPersona', (req, res) => {
 
-    console.log('Anterior', process.anterior);
     idPreguntas = [];
     todasPreguntas = [];
     random = 0;
@@ -156,36 +155,45 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
             random = Math.floor(Math.random() * (todasPreguntas.length - 0)) + 0;
             encontrado = false;
 
-            await persona.forEach(respuesta => {
-
+            persona.forEach((respuesta) => {
                 if (respuesta.idPregunta.toString() === todasPreguntas[random].toString()) {
                     encontrado = true;
+                }
+
+                if (process.anterior && persona.length != (todasPreguntas.length - 1)) {
+                    if (process.anterior.toString() === todasPreguntas[random].toString()) {
+                        encontrado = true;
+                    }
                 }
             });
 
         } while (encontrado);
 
+
         process.anterior = todasPreguntas[random];
-        console.log(todasPreguntas[random]);
 
+        await Pregunta.findById(todasPreguntas[random]).then((pregunta) => {
 
+            return res.status(200).json({
+                ok: true,
+                resp: 200,
+                msg: 'La pregunta se ha consultado exitosamente.',
+                cont: {
+                    pregunta
+                }
+            });
 
+        }).catch((err) => {
 
+            return res.status(500).json({
+                ok: false,
+                resp: 500,
+                msg: 'Error al intentar consultar la pregunta.',
+                cont: {
+                    err
+                }
+            });
 
-        // idPregunta.forEach(id => {
-
-        //     if (id.toString() === todasPreguntas[random].toString()) {
-        //         console.log('Está');
-        //     }
-        // })
-
-        return res.status(200).json({
-            ok: true,
-            resp: 200,
-            msg: 'La persona se ha consultado exitosamente.',
-            cont: {
-                todas: todasPreguntas
-            }
         });
 
     }).catch((err) => {

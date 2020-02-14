@@ -106,29 +106,56 @@ app.post('/registrar', (req, res) => {
         idPreparatoria: req.body.idPreparatoria
     });
 
-    new Persona(persona).save().then((persona) => {
+    Persona.findOne({ strCorreo: req.body.strCorreo }).then((encontrado) => {
 
-        res.status(200).json({
-            ok: true,
-            resp: 200,
-            msg: 'La persona se ha registrado exitosamente.',
+        if (!encontrado) {
+            new Persona(persona).save().then((persona) => {
+
+                return res.status(200).json({
+                    ok: true,
+                    resp: 200,
+                    msg: 'La persona se ha registrado exitosamente.',
+                    cont: {
+                        persona
+                    }
+                });
+
+            }).catch((err) => {
+
+                return res.status(400).json({
+                    ok: false,
+                    resp: 400,
+                    msg: 'Error al intentar registrar a la persona.',
+                    cont: {
+                        err
+                    }
+                });
+
+            });
+        }
+
+        return res.status(400).json({
+            ok: false,
+            resp: 400,
+            msg: 'El correo ya ha sido regitrado.',
             cont: {
-                persona
+                strCorreo
             }
         });
 
     }).catch((err) => {
 
-        res.status(400).json({
+        return res.status(500).json({
             ok: false,
-            resp: 400,
-            msg: 'Error al intentar registrar a la persona.',
+            resp: 500,
+            msg: 'Error al consultar a la persona.',
             cont: {
-                err
+                strCorreo
             }
         });
-
     });
+
+
 
 });
 
