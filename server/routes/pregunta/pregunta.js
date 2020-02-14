@@ -173,15 +173,10 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
             
 
         } while (encontrado);
-        console.log('Persona', persona.length);
-        console.log('Todas', todasPreguntas.length);
-        
         process.anterior = todasPreguntas[random];
 
         await Pregunta.findById(todasPreguntas[random]).then((pregunta) => {
-            console.log(todasPreguntas.length);
-            console.log(persona.length);
-            
+
             if(persona.length === todasPreguntas.length){
 
                 return res.status(200).json({
