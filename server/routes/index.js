@@ -6,7 +6,8 @@ app.use('/perfil', require('./perfil/perfil'));
 app.use('/persona', require('./persona/persona'));
 app.use('/pregunta', require('./pregunta/pregunta'));
 app.use('/respuesta', require('./persona/respuesta'));
-app.use('/preparatoria', require('./preparatoria/preparatoria'));
 app.use('/satisfaccion', require('./satisfaccion/satisfaccion'));
+app.use('/plantel', require('./subsistema/plantel'))
+app.use('/subsistema', require('./subsistema/subsistema'));
 
 module.exports = app;

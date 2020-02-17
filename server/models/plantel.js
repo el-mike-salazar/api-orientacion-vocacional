@@ -11,19 +11,19 @@ let schemaOptions = {
 
 let Schema = mongoose.Schema;
 
-let preparatoria = new Schema({
+let plantel = new Schema({
     strNombre: {
         type: String,
-        required: [true, 'Favor de ingresar el nombre de la preparatoria.']
+        required: [true, 'Favor de ingresar el nombre del plantel.']
     },
     strSiglas: {
         type: String,
-        required: [true, 'Favor de ingresar las siglas de la preparatoria.']
+        required: [true, 'Favor de ingresar las siglas del plantel.']
     }
 }, schemaOptions);
 
-preparatoria.plugin(uniqueValidator, {
-    message: 'La preparatoria ya existe.'
+plantel.plugin(uniqueValidator, {
+    message: 'El plantel ya existe.'
 });
 
-module.exports = mongoose.model('Preparatoria', preparatoria);
+module.exports = mongoose.model('Plantel', plantel);

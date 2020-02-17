@@ -23,7 +23,12 @@ let perfil = new Schema({
     strDesc: {
         type: String,
         required: [true, 'Favor de ingresar la descripción.']
-    }
+    },
+    arrPregunta: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Pregunta',
+        required:  [true, 'Favor de ingresar una pregunta.']
+    }]
 });
 
 perfil.plugin(uniqueValidator, {

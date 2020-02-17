@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const Pregunta = require('../../models/pregunta');
 const Persona = require('../../models/persona');
+const Perfil = require('../../models/perfil');
 
 app.get('/obtener', (req, res) => {
 
@@ -229,30 +230,84 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
 
 });
 
-app.post('/registrar', (req, res) => {
+app.post('/registrar/:idPerfil', (req, res) => {
 
-    const pregunta = new Pregunta({
-        strPregunta: req.body.strPregunta,
-        idPerfil: req.body.idPerfil
-    });
+    idPerfil = req.params.idPerfil;
 
-    new Pregunta(pregunta).save().then((pregunta) => {
-
-        return res.status(200).json({
-            ok: true,
-            resp: 200,
-            msg: 'La pregunta se ha registrado exitosamente.',
+    if (!idPerfil || idPerfil.length != 24) {
+        return res.status(404).json({
+            ok: false,
+            resp: 404,
+            msg: 'El perfil no existe.',
             cont: {
-                pregunta
+                idPerfil
             }
+        });
+    }
+
+    Perfil.findById(idPerfil).then((perfil) => {
+
+        if (!perfil) {
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: 'El perfil no existe.',
+                cont: {
+                    perfil
+                }
+            });
+        }
+
+        const pregunta = new Pregunta({
+            strPregunta: req.body.strPregunta
+        });
+    
+        new Pregunta(pregunta).save().then((pregunta) => {
+    
+            Perfil.findByIdAndUpdate(idPerfil, {$push: { arrPregunta: pregunta._id}}).then((resp) => {
+
+                return res.status(200).json({
+                    ok: true,
+                    resp: 200,
+                    msg: 'La pregunta se ha registrado exitosamente.',
+                    cont: {
+                        pregunta
+                    }
+                });
+
+            }).catch((err) => {
+
+                return res.status(400).json({
+                    ok: false,
+                    resp: 400,
+                    msg: 'Error al intentar asignar la pregunta al perfil, se tendrá que agregar manualmente.',
+                    cont: {
+                        error: Object.keys(err).length === 0 ? err.message : err
+                    }
+                });
+
+            });
+
+    
+        }).catch((err) => {
+    
+            return res.status(500).json({
+                ok: false,
+                resp: 500,
+                msg: 'Error al intentar registrar el perfil.',
+                cont: {
+                    error: Object.keys(err).length === 0 ? err.message : err
+                }
+            });
+    
         });
 
     }).catch((err) => {
 
         return res.status(500).json({
-            ok: false,
+            ok: true,
             resp: 500,
-            msg: 'Error al intentar registrar el perfil.',
+            msg: 'Error al intentar consultar el perfil.',
             cont: {
                 error: Object.keys(err).length === 0 ? err.message : err
             }
@@ -279,8 +334,7 @@ app.put('/actualizar/:idPregunta', (req, res) => {
 
     const pregunta = new Pregunta({
         _id: idPregunta,
-        strPregunta: req.body.strPregunta,
-        idPerfil: req.body.idPerfil
+        strPregunta: req.body.strPregunta
     });
 
     let err = pregunta.validateSync();

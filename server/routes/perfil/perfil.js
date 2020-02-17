@@ -65,7 +65,7 @@ app.get('/obtener/:idPerfil', (req, res) => {
                 resp: 404,
                 msg: 'No se encontró el perfil.',
                 cont: {
-                    perfiles
+                    perfil
                 }
             });
         }
@@ -172,7 +172,7 @@ app.put('/actualizar/:idPerfil', (req, res) => {
                 resp: 404,
                 msg: 'No se encontró el perfil.',
                 cont: {
-                    perfiles
+                    perfil
                 }
             });
         }

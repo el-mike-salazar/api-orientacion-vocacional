@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const Respuesta = require('../models/respuesta');
-
+const Subsistema = require('../models/subsistema');
 let schemaOptions = {
     timestamps: {
         createdAt: 'created_at',
@@ -40,8 +40,8 @@ let persona = new Schema({
     },
     idPreparatoria: {
         type: Schema.Types.ObjectId,
-        ref: 'Preparatoria',
-        required: [true, 'Favor de ingresar una preparatoria.']
+        ref: 'Plantel',
+        required: [true, 'Favor de ingresar un plantel.']
     },
     aJsnRespuesta: [Respuesta.schema]
 

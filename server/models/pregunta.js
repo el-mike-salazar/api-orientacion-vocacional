@@ -15,11 +15,6 @@ let pregunta = new Schema({
     strPregunta: {
         type: String,
         required: [true, 'Favor de ingresar la pregunta.']
-    },
-    idPerfil: {
-        type: Schema.Types.ObjectId,
-        ref: 'Perfil',
-        required: [true, 'Favor de ingresar el perfil.']
     }
 }, schemaOptions);
 
