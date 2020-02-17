@@ -96,19 +96,23 @@ app.get('/obtener/:idPersona', (req, res) => {
 
 app.post('/registrar', (req, res) => {
 
-    const persona = new Persona({
-        strNombre: req.body.strNombre,
-        strPrimerApellido: req.body.strPrimerApellido,
-        strSegundoApellido: req.body.strSegundoApellido,
-        nmbEdad: req.body.nmbEdad,
-        strCorreo: req.body.strCorreo,
-        strTelefono: req.body.strTelefono,
-        idPreparatoria: req.body.idPreparatoria
-    });
-
     Persona.findOne({ strCorreo: req.body.strCorreo }).then((encontrado) => {
 
+        console.log(encontrado);
+        
+
         if (!encontrado) {
+
+            const persona = new Persona({
+                strNombre: req.body.strNombre,
+                strPrimerApellido: req.body.strPrimerApellido,
+                strSegundoApellido: req.body.strSegundoApellido,
+                nmbEdad: req.body.nmbEdad,
+                strCorreo: req.body.strCorreo,
+                strTelefono: req.body.strTelefono,
+                idPreparatoria: req.body.idPreparatoria
+            });
+
             new Persona(persona).save().then((persona) => {
 
                 return res.status(200).json({
@@ -132,16 +136,20 @@ app.post('/registrar', (req, res) => {
                 });
 
             });
+        } else {
+
+            return res.status(400).json({
+                ok: false,
+                resp: 400,
+                msg: 'El correo ya ha sido regitrado.',
+                cont: {
+                    strCorreo: req.body.strCorreo
+                }
+            });
+
         }
 
-        return res.status(400).json({
-            ok: false,
-            resp: 400,
-            msg: 'El correo ya ha sido regitrado.',
-            cont: {
-                strCorreo
-            }
-        });
+
 
     }).catch((err) => {
 
@@ -150,12 +158,10 @@ app.post('/registrar', (req, res) => {
             resp: 500,
             msg: 'Error al consultar a la persona.',
             cont: {
-                strCorreo
+                strCorreo: req.body.strCorreo
             }
         });
     });
-
-
 
 });
 
