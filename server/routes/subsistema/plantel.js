@@ -123,8 +123,7 @@ app.post('/registrar/:idSubsistema', (req, res) => {
         }
 
         const plantel = new Plantel({
-            strNombre: req.body.strNombre,
-            strSiglas: req.body.strSiglas
+            strNombre: req.body.strNombre
         });
     
         new Plantel(plantel).save().then((plantel) => {

@@ -15,10 +15,6 @@ let plantel = new Schema({
     strNombre: {
         type: String,
         required: [true, 'Favor de ingresar el nombre del plantel.']
-    },
-    strSiglas: {
-        type: String,
-        required: [true, 'Favor de ingresar las siglas del plantel.']
     }
 }, schemaOptions);
 

@@ -94,6 +94,58 @@ app.get('/obtener/:idPersona', (req, res) => {
 
 });
 
+app.get('/obtenerCorreo/:strCorreo', (req, res)  => {
+
+    const strCorreo = req.params.strCorreo;
+
+    if (!strCorreo) {
+        return res.status(404).json({
+            ok: false,
+            resp: 404,
+            msg: 'El correo no existe.',
+            cont: {
+                strCorreo
+            }
+        });
+    }
+
+    Persona.findOne({strCorreo: strCorreo}).then((persona) => {
+
+        if (!persona) {
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: 'La persona no existe.',
+                cont: {
+                    persona
+                }
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            resp: 200,
+            msg: 'La persona se ha consultado exitosamente.',
+            cont: {
+                persona
+            }
+        });
+
+    }).catch((err) => {
+
+        return res.status(500).json({
+            ok: false,
+            resp: 500,
+            msg: 'Error al intentar consultar la persona.',
+            cont: {
+                err
+            }
+        });
+
+    });
+
+});
+
 app.post('/registrar', (req, res) => {
 
     Persona.findOne({ strCorreo: req.body.strCorreo }).then((encontrado) => {

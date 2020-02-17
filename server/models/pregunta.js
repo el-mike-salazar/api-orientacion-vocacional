@@ -15,6 +15,10 @@ let pregunta = new Schema({
     strPregunta: {
         type: String,
         required: [true, 'Favor de ingresar la pregunta.']
+    },
+    strTipo: {
+        type: String,
+        required: [true, 'Favor de ingresar el tipo.']
     }
 }, schemaOptions);
 
