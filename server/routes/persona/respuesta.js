@@ -6,6 +6,7 @@ const Persona = require('../../models/persona');
 const Respuesta = require('../../models/respuesta');
 const Pregunta = require('../../models/pregunta');
 const Perfil = require('../../models/perfil');
+const Satisfaccion = require('../../models/satisfaccion');
 
 // app.get('/obtener/:idPersona', (req, res) => {
 
@@ -134,19 +135,16 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
 
         if(persona.aJsnRespuesta <= 0){
 
-            // return res.status(404).json({
-            //     ok: false,
-            //     resp: 404,
-            //     msg: 'La persona aún no cuenta con respuestas, realice primero el cuestionario.',
-            //     cont: {
-            //         numRespuestas: persona.aJsnRespuesta.length
-            //     }
-            // });
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: 'La persona aún no cuenta con respuestas, realice primero el cuestionario.',
+                cont: {
+                    numRespuestas: persona.aJsnRespuesta.length
+                }
+            });
 
         }
-
-        console.log(persona.aJsnRespuesta);
-        
 
         Perfil.find().then(async (perfiles) => {
 
@@ -181,18 +179,17 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                     })
                 })
             });
-            
 
+            arrPerfil.sort(function(a, b){return b.nmbPuntos-a.nmbPuntos});
+            
             return res.status(200).json({
                 ok: true,
                 resp: 200,
-                msg: 'Consulta de perfiles.',
+                msg: 'Resultado de perfiles según su puntuación.',
                 cont: {
                     arrPerfil
                 }
-            });
-
-            
+            });   
 
         }).catch((err) => {
 
@@ -219,7 +216,6 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
         });
 
     });
-
 
 });
 
@@ -291,6 +287,78 @@ app.post('/registrar/:idPersona', (req, res) => {
             });
 
         });
+
+});
+
+app.get('/contadorRespuestas/:idPersona', (req, res) => {
+
+    const idPersona = req.params.idPersona;
+
+    if (!idPersona || idPersona.length != 24) {
+        return res.status(404).json({
+            ok: false,
+            resp: 404,
+            msg: 'La persona no existe.',
+            cont: {
+                idPersona
+            }
+        });
+    }
+    contadores = [];
+    Persona.findById(idPersona).then(async (persona) => {
+        let cont = 0;
+        await Satisfaccion.find().then((satisfacciones) => {
+            satisfacciones.forEach((satisfaccion) => {
+                cont = 0;
+                persona.aJsnRespuesta.forEach((respuesta) => {
+                    if(respuesta.idSatisfaccion.toString() === satisfaccion._id.toString()){
+                        cont = cont + 1;
+                    }
+                });
+
+                contadores.push({
+                    _id: satisfaccion._id,
+                    strDesc: satisfaccion.strDesc,
+                    cont
+                });
+            });
+        }).catch((err) => {
+
+            return res.status(500).json({
+                ok: false,
+                resp: 500,
+                msg: 'Error al intentar obtener los contadores.',
+                cont: {
+                    error: Object.keys(err).length === 0 ? err.message : err
+                }
+            });
+            
+
+        });
+        
+        return res.status(200).json({
+            ok: true,
+            resp: 200,
+            msg: 'Contadores.',
+            cont: {
+                contadores
+            }
+        });
+        
+
+    }).catch((err) => {
+
+        return res.status(500).json({
+            ok: false,
+            resp: 500,
+            msg: 'Error al intentar obtener los contadores.',
+            cont: {
+                error: Object.keys(err).length === 0 ? err.message : err
+            }
+        });
+        
+
+    });
 
 });
 
