@@ -305,11 +305,13 @@ app.get('/contadorRespuestas/:idPersona', (req, res) => {
         });
     }
     contadores = [];
+    contGral = 0;
     Persona.findById(idPersona).then(async (persona) => {
         let cont = 0;
         await Satisfaccion.find().then((satisfacciones) => {
             satisfacciones.forEach((satisfaccion) => {
                 cont = 0;
+                contGral = persona.aJsnRespuesta.length;
                 persona.aJsnRespuesta.forEach((respuesta) => {
                     if(respuesta.idSatisfaccion.toString() === satisfaccion._id.toString()){
                         cont = cont + 1;
@@ -341,6 +343,7 @@ app.get('/contadorRespuestas/:idPersona', (req, res) => {
             resp: 200,
             msg: 'Contadores.',
             cont: {
+                contGral,
                 contadores
             }
         });
