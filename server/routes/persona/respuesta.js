@@ -165,6 +165,7 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
             let contador = 0;
             await Respuesta.populate(persona.aJsnRespuesta, {path: 'idSatisfaccion'}).then((resp) => {
                 perfiles.forEach((perfil) => {
+                    contador = 0;
                     perfil.arrPregunta.forEach((idPregunta)  => {
                         persona.aJsnRespuesta.forEach((respuesta) => {
                             if(respuesta.idPregunta.toString() === idPregunta.toString()){
