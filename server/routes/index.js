@@ -10,4 +10,6 @@ app.use('/satisfaccion', require('./satisfaccion/satisfaccion'));
 app.use('/plantel', require('./subsistema/plantel'))
 app.use('/subsistema', require('./subsistema/subsistema'));
 
+app.use('/imagen', require('./imagen/imgRequest'));
+
 module.exports = app;

@@ -23,8 +23,7 @@ let persona = new Schema({
         required: [true, 'Favor de ingresar el primer apellido.']
     },
     strSegundoApellido: {
-        type: String,
-        required: [true, 'Favor de ingrear el segundo apellido.']
+        type: String
     },
     nmbEdad: {
         type: Number,
