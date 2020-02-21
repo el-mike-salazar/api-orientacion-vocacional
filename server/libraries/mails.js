@@ -12,11 +12,7 @@ class Mailer {
         this.transport = nodemailer.createTransport({
             host: 'smtp.office365.com',
             port: 587,
-            secure: true,
-            auth: { user: 'orientacion.vocacional@utags.edu.mx', pass: 'Noc09999' },
-            tls: {
-                ciphers: 'SSLv3'
-            }
+            auth: { user: 'orientacion.vocacional@utags.edu.mx', pass: 'Noc09999' }
         });
         this.mailOptions = {
             from: '"Orientanción Vocacional" <orientacion.vocacional@utags.edu.mx>'

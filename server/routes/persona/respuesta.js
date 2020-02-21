@@ -188,20 +188,17 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
             });
 
             arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
-            // const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
-            // let compiledTemplate = Hogan.compile(template);
+            const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
+            let compiledTemplate = Hogan.compile(template);
+            let mailOptions = {
+                from: 'orientacion.vocacional@utags.edu.mx',
+                to: persona.strCorreo,
+                subject: 'Resultados del Test de Orientanción Vocacional.',
 
-            // let mailOptions = {
-            //     from: 'centrocrecer19@gmail.com',
-            //     to: persona.strCorreo,
-            //     subject: 'Resultados del Test de Orientanción Vocacional.',
+                html: compiledTemplate.render({ nombre: persona.strNombre })
+            };
 
-            //     html: compiledTemplate.render({ nombre: persona.strNombre })
-            // };
-
-            // mailer.sendMail(mailOptions);
-
-            console.log(arrPerfil[0]._id);
+            mailer.sendMail(mailOptions);
 
             Persona.findByIdAndUpdate(idPersona, { $set: { idPrimerPerfil: arrPerfil[0]._id } }).then((persona) => {
 
@@ -465,6 +462,101 @@ app.delete('/eliminar/:idPersona/:idRespuesta', (req, res) => {
             });
 
         });
+
+});
+
+app.get('/obtenerPerfiles', (req, res) => {
+
+    arrPerfil = [];
+    Perfil.find().then((perfiles) => {
+
+        if (perfiles.length <= 0) {
+
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: 'No hay perfiles de los cuales sarcar un resultado.',
+                cont: {
+                    perfiles
+                }
+            });
+
+        }
+
+        Persona.aggregate([
+            { "$group": { _id: "$idPrimerPerfil", count: { $sum: 1 } } }
+        ]).sort({ count: 'desc' }).then((personas) => {
+
+            if (personas.length <= 0) {
+
+                return res.status(404).json({
+                    ok: false,
+                    resp: 404,
+                    msg: 'No hay personas de los cuales sarcar un resultado.',
+                    cont: {
+                        personas
+                    }
+                });
+
+            }
+
+            perfiles.forEach(async(perfil) => {
+                await personas.forEach((persona) => {
+
+                    if (persona._id) {
+                        if (persona._id.toString() === perfil._id.toString()) {
+                            arrPerfil.push({
+                                _id: perfil._id,
+                                strNombre: perfil.strPerfil,
+                                nmbPersonas: persona.count
+                            });
+                        }
+
+                    } else {
+                        encontrado = false;
+                        arrPerfil.find((perf, i) => {
+                            if (perf) {
+                                if (perf._id.toString() === perfil._id.toString()) {
+                                    encontrado = true;
+                                }
+                            }
+                        });
+
+                        if (!encontrado) {
+                            arrPerfil.push({
+                                _id: perfil._id,
+                                strNombre: perfil.strPerfil,
+                                nmbPersonas: 0
+                            });
+                        }
+                    }
+                });
+            });
+            arrPerfil.sort((a, b) => b.nmbPersonas - a.nmbPersonas);
+            return res.status(200).json({
+                ok: true,
+                resp: 200,
+                msg: 'Los perfiles se han obtenido existosamente.',
+                cont: {
+                    arrPerfil
+                }
+            });
+
+        });
+
+
+    }).catch((err) => {
+
+        return res.status(500).json({
+            ok: false,
+            resp: 500,
+            msg: 'Error al intentar obtener los resultados.',
+            cont: {
+                error: Object.keys(err).length === 0 ? err.message : err
+            }
+        });
+
+    });
 
 });
 

@@ -150,9 +150,6 @@ app.post('/registrar', (req, res) => {
 
     Persona.findOne({ strCorreo: req.body.strCorreo }).then((encontrado) => {
 
-        console.log(req.body.idPreparatoria);
-
-
         if (!encontrado) {
 
             const persona = new Persona({
