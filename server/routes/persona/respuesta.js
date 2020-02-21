@@ -500,38 +500,34 @@ app.get('/obtenerPerfiles', (req, res) => {
 
             }
 
-            perfiles.forEach(async(perfil) => {
-                await personas.forEach((persona) => {
-
+            cantidad = 0;
+            perfiles.forEach(perfil => {
+                let per = personas.filter(persona => {
                     if (persona._id) {
                         if (persona._id.toString() === perfil._id.toString()) {
-                            arrPerfil.push({
-                                _id: perfil._id,
-                                strNombre: perfil.strPerfil,
-                                nmbPersonas: persona.count
-                            });
-                        }
-
-                    } else {
-                        encontrado = false;
-                        arrPerfil.find((perf, i) => {
-                            if (perf) {
-                                if (perf._id.toString() === perfil._id.toString()) {
-                                    encontrado = true;
-                                }
-                            }
-                        });
-
-                        if (!encontrado) {
-                            arrPerfil.push({
-                                _id: perfil._id,
-                                strNombre: perfil.strPerfil,
-                                nmbPersonas: 0
-                            });
+                            cantidad = persona.count;
+                            return true;
                         }
                     }
+
                 });
+
+                if (per.length >= 1) {
+                    arrPerfil.push({
+                        _id: perfil._id,
+                        strNombre: perfil.strPerfil,
+                        nmbPersonas: cantidad
+                    });
+                } else {
+                    arrPerfil.push({
+                        _id: perfil._id,
+                        strNombre: perfil.strPerfil,
+                        nmbPersonas: 0
+                    });
+                }
+
             });
+
             arrPerfil.sort((a, b) => b.nmbPersonas - a.nmbPersonas);
             return res.status(200).json({
                 ok: true,
