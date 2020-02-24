@@ -94,7 +94,7 @@ app.get('/obtener/:idPersona', (req, res) => {
 
 });
 
-app.get('/obtenerCorreo/:strCorreo', (req, res)  => {
+app.get('/obtenerCorreo/:strCorreo', (req, res) => {
 
     const strCorreo = req.params.strCorreo;
 
@@ -109,7 +109,7 @@ app.get('/obtenerCorreo/:strCorreo', (req, res)  => {
         });
     }
 
-    Persona.findOne({strCorreo: strCorreo}).then((persona) => {
+    Persona.findOne({ strCorreo: strCorreo }).then((persona) => {
 
         if (!persona) {
             return res.status(404).json({
@@ -149,9 +149,6 @@ app.get('/obtenerCorreo/:strCorreo', (req, res)  => {
 app.post('/registrar', (req, res) => {
 
     Persona.findOne({ strCorreo: req.body.strCorreo }).then((encontrado) => {
-
-        console.log(encontrado);
-        
 
         if (!encontrado) {
 

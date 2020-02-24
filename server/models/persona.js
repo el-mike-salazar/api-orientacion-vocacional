@@ -42,6 +42,10 @@ let persona = new Schema({
         ref: 'Plantel',
         required: [true, 'Favor de ingresar un plantel.']
     },
+    idPrimerPerfil: {
+        type: Schema.Types.ObjectId,
+        ref: 'Perfil'
+    },
     aJsnRespuesta: [Respuesta.schema]
 
 }, schemaOptions);

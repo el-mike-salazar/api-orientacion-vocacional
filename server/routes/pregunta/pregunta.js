@@ -166,19 +166,19 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
                         encontrado = true;
                     }
                 }
-                
-                if( persona.length === todasPreguntas.length){
+
+                if (persona.length === todasPreguntas.length) {
                     encontrado = false;
                 }
             });
-            
+
 
         } while (encontrado);
         process.anterior = todasPreguntas[random];
 
         await Pregunta.findById(todasPreguntas[random]).then((pregunta) => {
 
-            if(persona.length === todasPreguntas.length){
+            if (persona.length === todasPreguntas.length) {
 
                 return res.status(200).json({
                     ok: true,
@@ -259,12 +259,13 @@ app.post('/registrar/:idPerfil', (req, res) => {
         }
 
         const pregunta = new Pregunta({
-            strPregunta: req.body.strPregunta
+            strPregunta: req.body.strPregunta,
+            strTipo: req.body.strTipo
         });
-    
+
         new Pregunta(pregunta).save().then((pregunta) => {
-    
-            Perfil.findByIdAndUpdate(idPerfil, {$push: { arrPregunta: pregunta._id}}).then((resp) => {
+
+            Perfil.findByIdAndUpdate(idPerfil, { $push: { arrPregunta: pregunta._id } }).then((resp) => {
 
                 return res.status(200).json({
                     ok: true,
@@ -288,9 +289,9 @@ app.post('/registrar/:idPerfil', (req, res) => {
 
             });
 
-    
+
         }).catch((err) => {
-    
+
             return res.status(500).json({
                 ok: false,
                 resp: 500,
@@ -299,7 +300,7 @@ app.post('/registrar/:idPerfil', (req, res) => {
                     error: Object.keys(err).length === 0 ? err.message : err
                 }
             });
-    
+
         });
 
     }).catch((err) => {
@@ -334,7 +335,8 @@ app.put('/actualizar/:idPregunta', (req, res) => {
 
     const pregunta = new Pregunta({
         _id: idPregunta,
-        strPregunta: req.body.strPregunta
+        strPregunta: req.body.strPregunta,
+        strTipo: req.body.strTipo
     });
 
     let err = pregunta.validateSync();
