@@ -120,22 +120,22 @@
         <div style="max-width: 600px; margin: 0 auto;" class="email-container">
             <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
                 <tr>
-                    <td valign="middle" class="hero bg_white" style="background-image: url(images/orientacion.jpg); background-size: cover; height: 400px;">
+                    <td valign="middle" class="hero bg_white" style="background-image: url(http://localhost:3000/api/imagen/obtener/images/orientacion.jpg); background-size: cover; height: 400px;">
                         <div class="overlay"></div>
                         <table style="border: white 1px solid;">
                             <tr>
                                 <td>
                                     <div class="text" style="padding: 0 4em; text-align: center;">
-                                        <h2 style="margin-top: 3px;">Hola, Abraham</h2>
-                                        <p>Gracias por realizar el Test de Orientacion Vocacoinal, esperamos que te sea de ayuda para toma una desicion para tu futuro.</p>
+                                        <h2 style="margin-top: 3px;">Hola, {{strNombre}}</h2>
+                                        <p>Gracias por realizar el Test de Orientación Vocacional, esperamos que te sea de ayuda para tomar una desicion de tu futuro.</p>
                                         <p class="container sub-text">Tu resultado</p>
                                         <table style="width: 100%; margin-left: 20px;">
                                             <tr>
                                                 <th>
-                                                    Tu Perfil
+                                                    {{strPerfil}}
                                                 </th>
                                                 <th>
-                                                    Descripción
+                                                    {{strDesc}}
                                                 </th>
                                             </tr>
                                             <tr>
