@@ -195,7 +195,7 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                 to: persona.strCorreo,
                 subject: 'Resultados del Test de Orientanción Vocacional.',
 
-                html: compiledTemplate.render({ strNombre: persona.strNombre, strPerfil: arrPerfil[0].strPerfil, strDesc: arrPerfil[0].strDesc })
+                html: compiledTemplate.render({ _id: persona._id, strNombre: persona.strNombre, strPerfil: arrPerfil[0].strPerfil, strDesc: arrPerfil[0].strDesc })
             };
 
             mailer.sendMail(mailOptions);
