@@ -23,19 +23,19 @@
         <tr>
             <td style="background-color: #ecf0f1">
                 <div style=" margin: 4% 10% 2%; text-align: justify; font-family: sans-serif;">
-                    <h2 style="color: #252b5c; margin: 0 0 7px; text-align: center;">Hola {{strNombre}}</h2>
+                    <h2 style="color: #252b5c; margin: 0 0 7px; ">Hola {{ strNombre }}</h2>
                     <p style="margin: 2px; font-size: 15px; text-align: center;">
                         ¡Gracias por contestar el Test de Orientacion Vocacional!
                     </p>
                     <p style="margin: 2px; font-size: 15px; text-align: center;">A continuación se te muestra la información de tu perfil segun tus respuestas en el test</p>
                     <div style="text-align: center;">
-                        <h3 style="color:#252b5c;">{{strPerfil}}</h3>
+                        <h3 style="color:#252b5c;">{{ strPerfil }}</h3>
                         <p style="margin: 2px; font-size: 12px;">
-                            {{strDesc}}
+                            {{ strDesc }}
                         </p>
                     </div>
                     <div style="width: 100%; margin:20px 0; display: inline-block; text-align: center;">
-                        <a style="text-decoration: none; border-radius: 30px; padding: 11px 23px; color: white; background-color: #3498db" href="http://172.17.1.4:4200/retroalimentacion/{{_id}}">Ver detalles...</a>
+                        <a style="text-decoration: none; border-radius: 30px; padding: 11px 23px; color: white; background-color: #3498db" href="http://test.utags.edu.mx/#/retroalimentacion/{{ _id }}">Ver detalles...</a>
                     </div>
                 </div>
             </td>
