@@ -187,42 +187,55 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                 });
             });
 
-            arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
-            const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
-            let compiledTemplate = Hogan.compile(template);
-            let mailOptions = {
-                from: 'orientacion.vocacional@utags.edu.mx',
-                to: persona.strCorreo,
-                subject: 'Resultados del Test de Orientanción Vocacional.',
+            if (!persona.idPrimerPerfil) {
 
-                html: compiledTemplate.render({ _id: persona._id, strNombre: persona.strNombre, strPerfil: arrPerfil[0].strPerfil, strDesc: arrPerfil[0].strDesc })
-            };
+                arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
+                const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
+                let compiledTemplate = Hogan.compile(template);
+                let mailOptions = {
+                    from: 'orientacion.vocacional@utags.edu.mx',
+                    to: persona.strCorreo,
+                    subject: 'Resultados del Test de Orientanción Vocacional.',
 
-            mailer.sendMail(mailOptions);
+                    html: compiledTemplate.render({ _id: persona._id, strNombre: (persona.strNombre + ' ' + persona.strPrimerApellido + ' ' + persona.strSegundoApellido), strPerfil: arrPerfil[0].strPerfil, strDesc: arrPerfil[0].strDesc })
+                };
 
-            Persona.findByIdAndUpdate(idPersona, { $set: { idPrimerPerfil: arrPerfil[0]._id } }).then((persona) => {
+                mailer.sendMail(mailOptions);
 
-                return res.status(200).json({
-                    ok: true,
-                    resp: 200,
-                    msg: 'Resultado de perfiles según su puntuación.',
-                    cont: {
-                        arrPerfil
-                    }
+                Persona.findByIdAndUpdate(idPersona, { $set: { idPrimerPerfil: arrPerfil[0]._id } }).then((persona) => {
+
+                    return res.status(200).json({
+                        ok: true,
+                        resp: 200,
+                        msg: 'Resultado de perfiles según su puntuación.',
+                        cont: {
+                            arrPerfil
+                        }
+                    });
+
+                }).catch((err) => {
+
+                    return res.status(500).json({
+                        ok: false,
+                        resp: 500,
+                        msg: 'Error al intentar obtener los perfiles.',
+                        cont: {
+                            error: Object.keys(err).length === 0 ? err.message : err
+                        }
+                    });
+
                 });
+            }
 
-            }).catch((err) => {
-
-                return res.status(500).json({
-                    ok: false,
-                    resp: 500,
-                    msg: 'Error al intentar obtener los perfiles.',
-                    cont: {
-                        error: Object.keys(err).length === 0 ? err.message : err
-                    }
-                });
-
+            return res.status(200).json({
+                ok: true,
+                resp: 200,
+                msg: 'Resultado de perfiles según su puntuación.',
+                cont: {
+                    arrPerfil
+                }
             });
+
 
 
         }).catch((err) => {
