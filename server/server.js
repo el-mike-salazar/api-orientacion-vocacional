@@ -3,10 +3,24 @@ require('./config/config');
 require('colors');
 
 const express = require('express');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
+
+
+const https = require('https');
+const httpsOptions = {
+  key: fs.readFileSync("/etc/letsencrypt/live/api-orientacion-vocacional.fs.utags.edu.mx/privkey.pem"),
+  cert: fs.readFileSync("/etc/letsencrypt/live/api-orientacion-vocacional.fs.utags.edu.mx/cert.pem"),
+  ca: fs.readFileSync("/etc/letsencrypt/live/api-orientacion-vocacional.fs.utags.edu.mx/fullchain.pem")
+};
+
+
+const httpsServer = https.createServer(httpsOptions, app);
+//httpsServer.listen(3000, 'api-orientacion-vocacional.fs.utags.edu.mx');
+
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -49,6 +63,8 @@ mongoose.connect(process.env.URLDB, {
     });
 
 // Puerto de Escucha
-const server = app.listen(process.env.PORT, () => {
-    console.log('[SERVER]'.yellow, `Escuchando en puerto: ${process.env.PORT}`);
-});
+//const server = app.listen(process.env.PORT, () => {
+//    console.log('[SERVER]'.yellow, `Escuchando en puerto: ${process.env.PORT}`);
+//});
+httpsServer.listen(3000, 'api-orientacion-vocacional.fs.utags.edu.mx');
+
