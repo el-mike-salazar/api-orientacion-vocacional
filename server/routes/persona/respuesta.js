@@ -13,30 +13,6 @@ const Hogan = require('hogan.js');
 const fs = require('fs');
 const path = require('path');
 
-// app.get('/obtener/:idPersona', (req, res) => {
-
-//     const idPersona = req.params.idPersona;
-
-//     if (!idPersona || idPersona.length != 24) {
-//         return res.status(404).json({
-//             ok: false,
-//             resp: 404,
-//             msg: 'La persona no existe.',
-//             cont: {
-//                 idPersona
-//             }
-//         });
-//     }
-
-//     Persona.findById(idPersona)
-//         .then((persona) => {
-
-//         }).catch((err) => {
-
-//         });
-
-// });
-
 app.get('/obtenerPorSatisfaccion/:idPersona/:idSatisfaccion', (req, res) => {
 
     const idPersona = req.params.idPersona;
@@ -187,9 +163,9 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                 });
             });
 
-            if (!persona.idPrimerPerfil) {
+            arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
 
-                arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
+            if (!persona.idPrimerPerfil) {
                 const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
                 let compiledTemplate = Hogan.compile(template);
                 let mailOptions = {
@@ -225,18 +201,19 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                     });
 
                 });
+
+            } else {
+
+                return res.status(200).json({
+                    ok: true,
+                    resp: 200,
+                    msg: 'Resultado de perfiles según su puntuación.',
+                    cont: {
+                        arrPerfil
+                    }
+                });
+
             }
-
-            return res.status(200).json({
-                ok: true,
-                resp: 200,
-                msg: 'Resultado de perfiles según su puntuación.',
-                cont: {
-                    arrPerfil
-                }
-            });
-
-
 
         }).catch((err) => {
 
@@ -475,6 +452,58 @@ app.delete('/eliminar/:idPersona/:idRespuesta', (req, res) => {
             });
 
         });
+
+});
+
+app.delete('/resetearTest/:idPersona', (req, res) => {
+
+    const idPersona = req.params.idPersona;
+
+    if (!idPersona || idPersona.length != 24) {
+        return res.status(404).json({
+            ok: false,
+            resp: 404,
+            msg: 'La persona no existe.',
+            cont: {
+                idPersona
+            }
+        });
+    }
+
+    Persona.findByIdAndUpdate(idPersona, { $set: { aJsnRespuesta: [], idPrimerPerfil: null } }).then((persona) => {
+
+        if (!persona) {
+            return res.status(404).json({
+                ok: false,
+                resp: 404,
+                msg: 'La persona no existe.',
+                cont: {
+                    persona
+                }
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            resp: 200,
+            msg: 'El test de la persona se ha reseteado exitosamente.',
+            cont: {
+                strCorreo: persona.strCorreo
+            }
+        });
+
+    }).catch((err) => {
+
+        return res.status(500).json({
+            ok: false,
+            resp: 500,
+            msg: 'Error al intentar resetear la respuesta.',
+            cont: {
+                error: Object.keys(err).length === 0 ? err.message : err
+            }
+        });
+
+    });
 
 });
 
@@ -750,7 +779,7 @@ app.get('/obtenerPerfiles/:idPlantel', (req, res) => {
                 perfiles.forEach((perfil) => {
                     contador = 0;
                     personas.forEach((persona) => {
-                        if (persona.idPrimerPerfil !== undefined) {
+                        if (persona.idPrimerPerfil !== undefined && persona.idPrimerPerfil !== null) {
                             if (perfil._id.toString() === persona.idPrimerPerfil.toString()) {
                                 contador = contador + 1;
                             }
