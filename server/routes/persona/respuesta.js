@@ -457,7 +457,6 @@ app.delete('/eliminar/:idPersona/:idRespuesta', (req, res) => {
 
 app.delete('/resetearTest/:idPersona', (req, res) => {
 
-
     const idPersona = req.params.idPersona;
 
     if (!idPersona || idPersona.length != 24) {
@@ -471,7 +470,7 @@ app.delete('/resetearTest/:idPersona', (req, res) => {
         });
     }
 
-    Persona.findByIdAndUpdate(idPersona, { $set: { aJsnRespuesta: [] } }).then((persona) => {
+    Persona.findByIdAndUpdate(idPersona, { $set: { aJsnRespuesta: [], idPrimerPerfil: null } }).then((persona) => {
 
         if (!persona) {
             return res.status(404).json({
