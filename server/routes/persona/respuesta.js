@@ -187,9 +187,8 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                 });
             });
 
+            arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
             if (!persona.idPrimerPerfil) {
-
-                arrPerfil.sort((a, b) => b.nmbPuntos - a.nmbPuntos);
                 const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
                 let compiledTemplate = Hogan.compile(template);
                 let mailOptions = {
@@ -225,18 +224,19 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                     });
 
                 });
+
+            } else {
+
+                return res.status(200).json({
+                    ok: true,
+                    resp: 200,
+                    msg: 'Resultado de perfiles según su puntuación.',
+                    cont: {
+                        arrPerfil
+                    }
+                });
+
             }
-
-            return res.status(200).json({
-                ok: true,
-                resp: 200,
-                msg: 'Resultado de perfiles según su puntuación.',
-                cont: {
-                    arrPerfil
-                }
-            });
-
-
 
         }).catch((err) => {
 
