@@ -779,7 +779,7 @@ app.get('/obtenerPerfiles/:idPlantel', (req, res) => {
                 perfiles.forEach((perfil) => {
                     contador = 0;
                     personas.forEach((persona) => {
-                        if (persona.idPrimerPerfil !== undefined || persona.idPrimerPerfil !== null) {
+                        if (persona.idPrimerPerfil !== undefined && persona.idPrimerPerfil !== null) {
                             if (perfil._id.toString() === persona.idPrimerPerfil.toString()) {
                                 contador = contador + 1;
                             }
