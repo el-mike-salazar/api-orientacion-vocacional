@@ -51,7 +51,7 @@ app.get('/obtener/:idPlantel', (req, res) => {
         return res.status(404).json({
             ok: false,
             resp: 404,
-            msg: 'El paltel no existe.',
+            msg: 'El plantel no existe.',
             cont: {
                 idPlantel
             }
@@ -125,11 +125,11 @@ app.post('/registrar/:idSubsistema', (req, res) => {
         const plantel = new Plantel({
             strNombre: req.body.strNombre
         });
-    
+
         new Plantel(plantel).save().then((plantel) => {
-    
-            Subsistema.findByIdAndUpdate(idSubsistema, { $push: { arrPlantel: plantel._id}}).then((resp) => {
-    
+
+            Subsistema.findByIdAndUpdate(idSubsistema, { $push: { arrPlantel: plantel._id } }).then((resp) => {
+
                 return res.status(200).json({
                     ok: true,
                     resp: 200,
@@ -149,14 +149,14 @@ app.post('/registrar/:idSubsistema', (req, res) => {
                         error: Object.keys(err).length === 0 ? err.message : err
                     }
                 });
-    
-    
-            });
-    
 
-    
+
+            });
+
+
+
         }).catch((err) => {
-    
+
             return res.status(400).json({
                 ok: false,
                 resp: 400,
@@ -165,7 +165,7 @@ app.post('/registrar/:idSubsistema', (req, res) => {
                     error: Object.keys(err).length === 0 ? err.message : err
                 }
             });
-    
+
         });
 
     }).catch((err) => {
