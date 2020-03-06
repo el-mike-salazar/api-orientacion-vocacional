@@ -197,6 +197,7 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
                 msg: 'La pregunta se ha consultado exitosamente.',
                 cont: {
                     pregunta,
+                    count: todasPreguntas.length,
                     ultima: false
                 }
             });
