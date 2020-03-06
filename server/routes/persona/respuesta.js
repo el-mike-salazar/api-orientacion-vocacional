@@ -169,11 +169,11 @@ app.get('/obtenerResultado/:idPersona', (req, res) => {
                 const template = fs.readFileSync(path.resolve(__dirname, `../../../uploads/templates/index.html`), 'utf-8');
                 let compiledTemplate = Hogan.compile(template);
                 let mailOptions = {
-                    from: 'orientacion.vocacional@utags.edu.mx',
+                    from: '"Orientanción Vocacional" <orientacion.vocacional@utags.edu.mx>',
                     to: persona.strCorreo,
                     subject: 'Resultados del Test de Orientanción Vocacional.',
 
-                    html: compiledTemplate.render({ _id: persona._id, strNombre: (persona.strNombre + ' ' + persona.strPrimerApellido + ' ' + persona.strSegundoApellido), strPerfil: arrPerfil[0].strPerfil, strDesc: arrPerfil[0].strDesc })
+                    html: compiledTemplate.render({ _id: persona._id, strNombre: (persona.strNombre + ' ' + persona.strPrimerApellido + ' ' + (persona.strSegundoApellido ? persona.strSegundoApellido : '')), strPerfil: arrPerfil[0].strPerfil, strDesc: arrPerfil[0].strDesc })
                 };
 
                 mailer.sendMail(mailOptions);
