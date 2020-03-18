@@ -103,6 +103,7 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
     todasPreguntas = [];
     random = 0;
     idPersona = req.params.idPersona;
+    respuestas = [];
 
     if (!idPersona || idPersona.length != 24) {
         return res.status(404).json({
@@ -133,84 +134,48 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
             });
         }
 
-        await Pregunta.find({}, { _id: 1 }).then(preguntas => {
-
-            preguntas.forEach(pregunta => {
-                todasPreguntas.push(pregunta._id);
-            });
-
-        }).catch((err) => {
-
-            return res.status(500).json({
-                ok: false,
-                resp: 500,
-                msg: 'Error al intentar consultar las preguntas.',
-                cont: {
-                    err
-                }
-            });
-
+        await persona.forEach((resp) => {
+            respuestas.push(resp.idPregunta);
         });
 
-        do {
-            random = Math.floor(Math.random() * (todasPreguntas.length - 0)) + 0;
-            encontrado = false;
+        await Pregunta.find().then(async(pregs) => {
+            await Pregunta.find({ _id: { $nin: respuestas } }, { _id: 1, strPregunta: 1, strTipo: 1 }).then(async preguntas => {
 
-            persona.forEach((respuesta) => {
-                if (respuesta.idPregunta.toString() === todasPreguntas[random].toString()) {
-                    encontrado = true;
+                if (preguntas.length >= 1) {
+                    random = Math.floor(Math.random() * (preguntas.length - 0)) + 0;
+                    return res.status(200).json({
+                        ok: true,
+                        resp: 200,
+                        msg: 'La pregunta se ha consultado exitosamente.',
+                        cont: {
+                            pregunta: preguntas[random],
+                            count: pregs.length,
+                            ultima: false
+                        }
+                    });
+                } else {
+                    return res.status(200).json({
+                        ok: true,
+                        resp: 200,
+                        msg: 'Ya no hay más preguntas para mostrar.',
+                        cont: {
+                            ultima: true
+                        }
+                    });
                 }
 
-                if (process.anterior && persona.length != (todasPreguntas.length - 1)) {
-                    if (process.anterior.toString() === todasPreguntas[random].toString()) {
-                        encontrado = true;
-                    }
-                }
 
-                if (persona.length === todasPreguntas.length) {
-                    encontrado = false;
-                }
-            });
+            }).catch((err) => {
 
-
-        } while (encontrado);
-        process.anterior = todasPreguntas[random];
-
-        await Pregunta.findById(todasPreguntas[random]).then((pregunta) => {
-
-            if (persona.length === todasPreguntas.length) {
-
-                return res.status(200).json({
-                    ok: true,
-                    resp: 200,
-                    msg: 'Ya no hay más preguntas para mostrar.',
+                return res.status(500).json({
+                    ok: false,
+                    resp: 500,
+                    msg: 'Error al intentar consultar las preguntas.',
                     cont: {
-                        ultima: true
+                        err: err.message
                     }
                 });
 
-            }
-
-            return res.status(200).json({
-                ok: true,
-                resp: 200,
-                msg: 'La pregunta se ha consultado exitosamente.',
-                cont: {
-                    pregunta,
-                    count: todasPreguntas.length,
-                    ultima: false
-                }
-            });
-
-        }).catch((err) => {
-
-            return res.status(500).json({
-                ok: false,
-                resp: 500,
-                msg: 'Error al intentar consultar la pregunta.',
-                cont: {
-                    err
-                }
             });
 
         });
@@ -230,6 +195,7 @@ app.get('/obtenerAleatorio/:idPersona', (req, res) => {
     });
 
 });
+
 
 app.post('/registrar/:idPerfil', (req, res) => {
 
