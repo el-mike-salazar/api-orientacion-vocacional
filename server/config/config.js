@@ -10,9 +10,9 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
 // Base de Datos
 if (process.env.NODE_ENV === 'dev') {
-    process.env.URLDB = "mongodb+srv://admin:083959ac@cluster0-j04oc.mongodb.net/orientacion-vocacional?authSource=admin";
+    process.env.URLDB = "";
 } else {
-    process.env.URLDB = "mongodb+srv://admin:083959ac@cluster0-j04oc.mongodb.net/orientacion-vocacional?authSource=admin";
+    process.env.URLDB = "";
 }
 
 // Vencimiento del Token
